@@ -1,0 +1,4 @@
+name: "Cars Showroom"
+description: "Cars 4-sale listings"
+type: module
+core: 8.x
