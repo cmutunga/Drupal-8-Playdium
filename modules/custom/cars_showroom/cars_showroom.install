@@ -1,0 +1,98 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the cars_showroom module.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * Creates some default entries on this module custom table.
+ *
+ */
+
+function cars_showroom_install() {
+    // Insert one example entry into schema.
+    $entry = [
+        'id' => 1,
+        'make' => 'Honda',
+        'model' => 'Pilot',
+        'color' => 'Maroon',
+        'odo' => '12303',
+        'year' => 2018,
+        'price' => 45000,
+        ];
+
+    $connection = Drupal::database();
+    $connection->insert('cars_showroom')->fields($entry)->execute();
+}
+/**
+ * Implements hook_schema().
+ *
+ * Defines the database tables used by this module.
+ *
+ */
+
+function cars_showroom_schema (){
+    $schema['cars_showroom'] = [
+        'description' => 'Stores car inventory data for demo purposes.',
+        'fields' => [
+            'id' => [
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+                'size' => 'tiny',
+                'description' => 'Unique identifier and key',
+            ],
+            'make' => [
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'Car make e.g. Toyota.',
+            ],
+            'model' => [
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'Car model e.g. Corolla.',
+            ],
+            'color' => [
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'Usual meaning.',
+            ],
+            'odo' => [
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+                'size' => 'medium',
+                'description' => 'The odometer reading in kilometers.',
+            ],
+            'year' => [
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+                'size' => 'small',
+                'description' => 'The year of manufacture.',
+            ],
+            'price' => [
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+                'size' => 'small',
+                'description' => 'The listed price.',
+            ],
+        ],
+        'primary key' => ['id'],
+    ];
+    return $schema;
+}

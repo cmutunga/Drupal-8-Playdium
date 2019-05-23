@@ -50,3 +50,7 @@
 
 # Ignore ide specific file
 .idea/workspace.xml
+
+# Ignore sites/default/files
+sites/default/files/php/twig/.htaccess
+sites/drupal-8-playdium.dd/files/php/twig/.htaccess
