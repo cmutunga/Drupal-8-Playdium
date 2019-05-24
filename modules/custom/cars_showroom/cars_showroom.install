@@ -8,43 +8,79 @@
 /**
  * Implements hook_install().
  *
- * Creates some default entries on this module custom table.
+ * Creates a few default entries on this module custom tables.
  *
  */
 
+
+
 function cars_showroom_install() {
-    // Insert one example entry into schema.
-    $entry = [
-        'id' => 1,
+    // Insert some example entries into schema.
+
+    $a_car = [
+        'car_id' => 1,
         'make' => 'Honda',
         'model' => 'Pilot',
         'color' => 'Maroon',
         'odo' => '12303',
         'year' => 2018,
-        'price' => 45000,
+        'list_price' => 45000,
+        'emp_id' => 2,
         ];
 
-    $connection = Drupal::database();
-    $connection->insert('cars_showroom')->fields($entry)->execute();
-}
+    $a_salesperson = [
+        'emp_id' => 2,
+        'first_name' => 'Paul',
+        'last_name' => 'Hustler',
+        'email' => 'paul.hustler@showroom.com',
+        'is_manager' => 0,
+        'manager_id' => 1,
+        ];
+
+    $a_manager = [
+        'emp_id' => 1,
+        'first_name' => 'John',
+        'last_name' => 'Shark',
+        'email' => 'john.shark@showroom.com',
+        'is_manager' => 1,
+        ];
+
+    $a_customer = [
+        'client_id' => 1,
+        'first_name' => 'Jane',
+        'last_name' => 'Blond',
+        'email' => 'jane.blond@gmail.com',
+        'phone' => 12345678901,
+        ];
+
+        $connection = Drupal::database();
+        $connection->insert('car_inventory')->fields($a_car)->execute();
+        $connection->insert('customer')->fields($a_customer)->execute();
+        $connection->insert('employee')->fields($a_salesperson)->execute();
+        $connection->insert('employee')->fields($a_manager)->execute();
+
+    }
+
 /**
  * Implements hook_schema().
  *
- * Defines the database tables used by this module.
+ * Defines database tables this module uses.
  *
  */
 
+
 function cars_showroom_schema (){
-    $schema['cars_showroom'] = [
+
+    $schema['car_inventory'] = [
         'description' => 'Stores car inventory data for demo purposes.',
         'fields' => [
-            'id' => [
+            'car_id' => [
                 'type' => 'int',
                 'unsigned' => TRUE,
                 'not null' => TRUE,
                 'default' => 0,
                 'size' => 'tiny',
-                'description' => 'Unique identifier and key',
+                'description' => 'Unique identifier and key.',
             ],
             'make' => [
                 'type' => 'varchar',
@@ -83,7 +119,7 @@ function cars_showroom_schema (){
                 'size' => 'small',
                 'description' => 'The year of manufacture.',
             ],
-            'price' => [
+            'list_price' => [
                 'type' => 'int',
                 'unsigned' => TRUE,
                 'not null' => TRUE,
@@ -91,8 +127,161 @@ function cars_showroom_schema (){
                 'size' => 'small',
                 'description' => 'The listed price.',
             ],
+            'emp_id' => [
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => FALSE,
+                'default' => 0,
+                'size' => 'tiny',
+                'description' => 'assigned sales person.',
+            ],
+
         ],
-        'primary key' => ['id'],
+        'primary key' => ['car_id'],
     ];
+
+    $schema['employee'] = [
+        'description' => 'Showroom staff either sales or manager.',
+        'fields' => [
+            'emp_id' => [
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+                'size' => 'tiny',
+                'description' => 'Unique employee identifier and key',
+            ],
+            'first_name' => [
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'Part of employee name.',
+            ],
+            'last_name' => [
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'Part of employee name.',
+            ],
+            'email' => [
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'Usual meaning.',
+            ],
+            'is_manager' => [
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'size' => 'tiny',
+                'description' => 'Is the employee a manager.',
+            ],
+            'manager_id' => [
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => FALSE,
+                'default' => NULL,
+                'size' => 'tiny',
+                'description' => 'employee\'s manager identifier.',
+            ],
+        ],
+        'primary key' => ['emp_id'],
+    ];
+
+    $schema['customer'] = [
+        'description' => 'Customer looking for a quality used car.',
+        'fields' => [
+            'client_id' => [
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+                'size' => 'tiny',
+                'description' => 'Unique customer identifier.',
+            ],
+            'first_name' => [
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'Part of employee name.',
+            ],
+            'last_name' => [
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'Part of employee name.',
+            ],
+            'email' => [
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'Usual meaning.',
+            ],
+            'phone' => [
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+                'size' => 'big',
+                'description' => 'Phone number.',
+            ],
+
+        ],
+        'primary key' => ['client_id'],
+    ];
+
+    $schema['sale_log'] = [
+        'description' => 'Record of offers and sales.',
+        'fields' => [
+            'trans_id' => [
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+                'size' => 'medium',
+                'description' => 'transaction identifier',
+            ],
+            'client_id' => [
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+                'size' => 'tiny',
+                'description' => 'customer making an offer',
+            ],
+            'car_id' => [
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+                'size' => 'tiny',
+                'description' => 'Selected car.',
+            ],
+            'offer_price' => [
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+                'size' => 'small',
+                'description' => 'Customer offer for selected car.',
+            ],
+            'offer_accepted' => [
+                'type' => 'int',
+                'not null' => FALSE,
+                'default' => 0,
+                'size' => 'tiny',
+                'description' => 'Is the customer offer accepted?.',
+            ],
+        ],
+        'primary key' => ['trans_id'],
+    ];
+
     return $schema;
+
 }
