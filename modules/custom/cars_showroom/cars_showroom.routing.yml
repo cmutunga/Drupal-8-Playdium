@@ -1,0 +1,15 @@
+cars_showroom.lists:
+  path: '/auto-dealer'
+  defaults:
+    _controller: '\Drupal\cars_showroom\Controller\CarsShowroomController::ourList'
+    _title: 'Lists'
+  requirements:
+    _permission: 'access content'
+
+cars_showroom.add:
+  path: '/add'
+  defaults:
+    _form: '\Drupal\cars_showroom\Form\CarsShowroomAddForm'
+    _title: 'Add an entry'
+  requirements:
+    _permission: 'access content'
