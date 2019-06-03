@@ -10,6 +10,6 @@ cars_showroom.add:
   path: '/add'
   defaults:
     _form: '\Drupal\cars_showroom\Form\CarsShowroomAddForm'
-    _title: 'Add an entry'
+    _title: ''
   requirements:
     _permission: 'access content'
