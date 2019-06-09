@@ -1,0 +1,8 @@
+services:
+  db_access:
+    class: Drupal\cars_showroom\DBInterface\DataAccess
+    arguments: ['@database']
+
+  fk_validator:
+    class: Drupal\cars_showroom\DBInterface\FKValidator
+    arguments: ['@database']

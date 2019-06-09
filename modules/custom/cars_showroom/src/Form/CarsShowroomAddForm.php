@@ -2,61 +2,41 @@
 
 namespace Drupal\cars_showroom\Form;
 
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Database\Connection;
+use drupal\cars_showroom\DBInterface\FKValidator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class CarsShowroomAddForm extends FormBase {
 
     Protected $connection;
+    Protected $fkValidator;
 
-    public function __construct(Connection $connection) {
+    public function __construct(Connection $connection, FKValidator $fkValidator) {
 
         $this->connection = $connection;
+        $this->fkValidator = $fkValidator;
+
     }
 
 
     public static function create(ContainerInterface $container) {
 
             $connection = $container->get('database');
+            $fkValidator = $container->get('fk_validator');
 
-        return new static($connection );
+        return new static($connection, $fkValidator );
     }
 
     public function getFormId() {
         return 'cars_showroom_add_form';
     }
 
-    Private function getManagers()
-    {
-        //Drupal DB does not enforce or even implement FK constraints
-        //this hack implements foreign key validation in front end code meaning that only
-        // a valid manager can be entered in the employee's "manager_id" field
-        //This is done by retrieving all valid managers and allowing
-        // only them as input in the select button
-
-        /*several records -- only managers in employee table  */
-        $queryRtn = $this->connection->select('employee', 'x')
-            ->fields('x',['emp_id','first_name','last_name','is_manager'])
-            ->condition('x.is_manager','1','=');
-        $managers = $queryRtn->execute()->fetchAll();
-
-        /*build an array, mnrRows,
-        to be used in the options property of the manager_id select element */
-        $mnrRows = [];
-        foreach ($managers as $boss) {
-            $bossID = $boss->emp_id;
-            $bossName = $boss->first_name.' '. $boss->last_name;
-            $row = [strval($bossID) => $this->t(strval($bossName))];
-            array_push($mnrRows,$row);
-        }
-        return $mnrRows;
-    }
 
     public function buildForm(array $form, FormStateInterface $form_state) {
 
-        /*
+    /*
         $form ['data_selector'] = [
             '#type' => 'select',
             '#title' => $this->t('Type of entry'),
@@ -66,7 +46,7 @@ class CarsShowroomAddForm extends FormBase {
                 '3' => $this->t('Customers'),
             ],
         ];
-
+    */
         $form ['car']['car_id'] = [
             '#type' => 'textfield',
             '#size' => 20,
@@ -109,19 +89,18 @@ class CarsShowroomAddForm extends FormBase {
             '#title' => $this->t('List Price'),
         ];
 
-        /*code for FK validation here*/
-        /*
+       //FK validation -- ensures only bonafide sales persons can be entered in this field
+        $salesPersons = $this->fkValidator->getSalesPersons();
         $form ['car']['emp_id'] = [
-            '#type' => 'textfield',
-            '#size' => 20,
-            '#title' => $this->t('EmpID'),
+            '#type' => 'select',
+            '#title' => $this->t('Sales Person'),
+            '#options' => $salesPersons,
         ];
 
         $form ['car']['add']= [
             '#type' => 'submit',
             '#value' => $this->t('Add this!'),
         ];
-
 
 
         $form ['customer']['client_id'] = [
@@ -159,9 +138,6 @@ class CarsShowroomAddForm extends FormBase {
             '#value' => $this->t('Add this!'),
         ];
 
-      */
-
-
 
 
         $form ['employee']['emp_id'] = [
@@ -197,10 +173,12 @@ class CarsShowroomAddForm extends FormBase {
             ],
         ];
 
-        $managers = $this->getManagers();
+        //FK validation --- ensure only bonafide managers can be entered in this field
+        $managers = $this->fkValidator->getManagers();
+
         $form ['employee']['mnr_id'] = [
             '#type' => 'select',
-            '#title' => $this->t('Manager ID'),
+            '#title' => $this->t('Manager'),
             '#options' => $managers,
         ];
 
@@ -209,7 +187,8 @@ class CarsShowroomAddForm extends FormBase {
             '#value' => $this->t('Add this!'),
         ];
 
-        return $form ['employee'];
+        $form['#cache']['max-age'] = 0;
+        return $form ['car'];
     }
 
     public function submitForm(array &$form, FormStateInterface $form_state) {

@@ -29,32 +29,39 @@ class CarsShowroomController extends ControllerBase {
 
         //start a table
         $car_headers = [
-            $this->t('ID'),
-            $this->t('Make'),
-            $this->t('Model'),
-            $this->t('Color'),
-            $this->t('Odo'),
-            $this->t('Year'),
-            $this->t('List'),
-            $this->t('EmpID'),
+            'id' => $this->t('ID'),
+            'mk' => $this->t('Make'),
+            'md' => $this->t('Model'),
+            'cl' => $this->t('Color'),
+            'od' => $this->t('Odo'),
+            'yr' => $this->t('Year'),
+            'lp' => $this->t('List'),
+            'emp' => $this->t('EmpID'),
         ];
 
         //to hold table rows
         $carRows = [];
 
+
         /*several records -- all cars in inventory  */
         $queryRtn = $this->connection->select('car_inventory')->fields('car_inventory');
         $selectCars = $queryRtn->execute()->fetchAll();
-
+        $row = [];
         /*build our table -- add each record to our table's row*/
         foreach ($selectCars as $car) {
-            // Sanitize each entry.
-            $row = [$car->car_id, $car->make, $car->model, $car->color, $car->odo, $car->year, $car->list_price, $car->emp_id];
-            array_push($carRows,$row);
+
+            $key = strval($car->car_id);
+
+            $row [$key] =  ['id' =>$car->car_id, 'mk' =>$car->make, 'md' =>$car->model, 'cl' => $car->color, 'od' =>$car->odo, 'yr' =>$car->year, 'lp' =>$car->list_price, 'emp' =>$car->emp_id,];
+
+            array_push($carRows,$row[$key]);
 
             //below works too
             //$carRows[] = array_map('Drupal\Component\Utility\Html::escape', $row);
          }
+
+
+
 
         //render array
         $content['cars'] = [

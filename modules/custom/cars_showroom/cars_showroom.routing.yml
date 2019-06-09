@@ -13,3 +13,11 @@ cars_showroom.add:
     _title: ''
   requirements:
     _permission: 'access content'
+
+cars_showroom.list_delete:
+  path: '/list-delete-records'
+  defaults:
+    _form: '\Drupal\cars_showroom\Form\ListDeleteRecordsForm'
+    _title: ''
+  requirements:
+    _permission: 'access content'
