@@ -1,23 +1,23 @@
-cars_showroom.lists:
-  path: '/auto-dealer'
+cars_showroom.cars:
+  path: '/cars'
   defaults:
-    _controller: '\Drupal\cars_showroom\Controller\CarsShowroomController::ourList'
-    _title: 'Lists'
-  requirements:
-    _permission: 'access content'
-
-cars_showroom.add:
-  path: '/add'
-  defaults:
-    _form: '\Drupal\cars_showroom\Form\CarsShowroomAddForm'
+    _form: '\Drupal\cars_showroom\Form\CarsForm'
     _title: ''
   requirements:
     _permission: 'access content'
 
-cars_showroom.list_delete:
-  path: '/list-delete-records'
+cars_showroom.employees:
+  path: '/employees'
   defaults:
-    _form: '\Drupal\cars_showroom\Form\ListDeleteRecordsForm'
+    _form: '\Drupal\cars_showroom\Form\EmployeesForm'
+    _title: ''
+  requirements:
+    _permission: 'access content'
+
+cars_showroom.customers:
+  path: '/customers'
+  defaults:
+    _form: '\Drupal\cars_showroom\Form\CustomersForm'
     _title: ''
   requirements:
     _permission: 'access content'

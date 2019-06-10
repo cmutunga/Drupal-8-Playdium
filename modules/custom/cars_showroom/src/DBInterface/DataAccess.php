@@ -34,7 +34,7 @@ class DataAccess {
         /*to hold table rows*/
         $allEmployees = [];
 
-        //to retrieve several records -- all employees
+        //to retrieve several records -- all employees in this case
         $queryRtn = $this->connection->select('employee')->fields('employee');
         $selectEmps = $queryRtn->execute()->fetchAll();
         $row = [];
@@ -51,7 +51,7 @@ class DataAccess {
     public function getCustomers(){
         /*to hold table rows*/
         $allCustomers = [];
-        //to retrieve several records -- all clients
+        //to retrieve several records -- all clients in this case
         $queryRtn = $this->connection->select('customer')->fields('customer');
         $selectClients = $queryRtn->execute()->fetchAll();
         $row = [];
@@ -62,9 +62,12 @@ class DataAccess {
             array_push($allCustomers,$row[$key]);
         }
         return $allCustomers;
-
     }
-
-
+    //generic method that accepts table name and a record expressed as an array to be inserted to table
+    //can be used by client code to insert a row (expressed as array) into any specified table
+    public function insertNewRecord($arrRecord, $tableName){
+        $targetTable = strval($tableName);
+        $this->connection->insert($targetTable)->fields($arrRecord)->execute();
+    }
 
 }
