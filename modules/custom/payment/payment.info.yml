@@ -1,0 +1,4 @@
+name: "Payment"
+description: "Payment Processor Interfaces"
+type: module
+core: 8.x

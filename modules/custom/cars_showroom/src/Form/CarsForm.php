@@ -28,20 +28,20 @@ class CarsForm extends FormBase{
         return 'cars_form';
     }
 
-    /*
-        $form ['data_selector'] = [
-            '#type' => 'select',
-            '#title' => $this->t('Type of entry'),
-            '#options' => [
-                '1' => $this->t('Cars'),
-                '2' => $this->t('Employees'),
-                '3' => $this->t('Customers'),
-            ],
-        ];
-    */
-
     public function buildForm(array $form, FormStateInterface $form_state) {
-        /*
+
+                 $form ['data_selector'] = [
+                    '#type' => 'select',
+                    '#title' => $this->t('Type of entry'),
+                    '#options' => [
+                        '1' => $this->t('List or Delete Cars'),
+                        '2' => $this->t('Add Cars'),
+                        '3' => $this->t('Edit Cars'),
+                        ],
+                 ];
+
+
+
                 //1. Build & return list of cars
                 // 1.1 start with table headers
                 $carHeaders = [
@@ -58,7 +58,7 @@ class CarsForm extends FormBase{
                 //1.2 Call DB access service to return an inventory array
                 $carInventory = $this->dbAccess->getInventory();
                 //1.3 use inventory array and headers to build render array as table on a form
-                $form['list']  = [
+                $car['list']  = [
                     '#type' => 'tableselect',
                     '#caption' => $this
                         ->t('Cars For Sale'),
@@ -66,45 +66,45 @@ class CarsForm extends FormBase{
                     '#options' => $carInventory,
                 ];
 
-        */
 
-                $form ['add']['car_id'] = [
+
+                $car ['add']['car_id'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Car ID'),
                 ];
 
-                $form ['add']['make'] = [
+                $car ['add']['make'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Car Make'),
                 ];
 
-                $form ['add']['model'] = [
+                $car ['add']['model'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Model'),
                 ];
 
-                $form ['add']['color'] = [
+                $car ['add']['color'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Color'),
                 ];
 
-                $form ['add']['odo'] = [
+                $car ['add']['odo'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Odo Reading'),
                 ];
 
-                $form ['add']['year'] = [
+                $car ['add']['year'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Year'),
                 ];
 
-                $form ['add']['list_price'] = [
+                $car ['add']['list_price'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('List Price'),
@@ -112,19 +112,23 @@ class CarsForm extends FormBase{
 
                 //FK validation -- ensures only bonafide sales persons can be entered in this field
                 $salesPersons = $this->fkValidator->getSalesPersons();
-                $form ['add']['emp_id'] = [
+                $car ['add']['emp_id'] = [
                     '#type' => 'select',
                     '#title' => $this->t('Sales Person'),
                     '#options' => $salesPersons,
                 ];
 
-                $form ['add']['add_car']= [
+                $form = $car['add'];
+
+                /*
+                $form ['action']= [
                     '#type' => 'submit',
                     '#value' => $this->t('Add this!'),
                 ];
+                */
 
-        $form['#cache']['max-age'] = 0;
-        return $form;
+                $form['#cache']['max-age'] = 0;
+                return $form;
     }
 
     public function submitForm(array &$form, FormStateInterface $form_state){

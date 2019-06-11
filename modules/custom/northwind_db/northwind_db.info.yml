@@ -1,0 +1,4 @@
+name: "Northwind DB"
+description: "Access Northwind DB"
+type: module
+core: 8.x

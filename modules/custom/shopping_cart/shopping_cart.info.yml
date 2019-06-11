@@ -1,0 +1,4 @@
+name: "Shopping Cart"
+description: "Commerce Cart"
+type: module
+core: 8.x

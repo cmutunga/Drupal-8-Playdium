@@ -1,0 +1,4 @@
+name: "Geographic"
+description: "Geographic APIs Features"
+type: module
+core: 8.x
