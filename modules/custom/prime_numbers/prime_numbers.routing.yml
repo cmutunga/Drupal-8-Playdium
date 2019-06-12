@@ -1,0 +1,15 @@
+prime_numbers.isitprime:
+  path: '/isitprime/{count}'
+  defaults:
+    _controller: 'Drupal\prime_numbers\Controller\PrimeNumbersController::isItPrime'
+    _title: ''
+  requirements:
+    _permission: 'access content'
+
+prime_numbers.primesform:
+  path: '/primeform'
+  defaults:
+    _form: '\Drupal\prime_numbers\Form\PrimesForm'
+    _title: 'Prime # check'
+  requirements:
+    _permission: 'access content'

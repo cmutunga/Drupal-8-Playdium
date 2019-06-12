@@ -1,0 +1,3 @@
+simple-math:
+  js:
+    js/simple-math.js: {}

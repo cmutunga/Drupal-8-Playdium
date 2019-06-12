@@ -1,0 +1,4 @@
+services:
+  primes_evaluator:
+    class: Drupal\prime_numbers\PrimeEval\PrimeEvaluator
+    arguments: ['@current_user']

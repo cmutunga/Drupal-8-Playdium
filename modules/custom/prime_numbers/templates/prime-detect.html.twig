@@ -1,0 +1,43 @@
+
+{{ attach_library('prime_numbers/simple-math') }}
+
+<html>
+
+//this simple code tests that services yml works and will be replaced
+
+<div>
+    <h3> <u><b>{{ header }}</b></u></h3>
+    <br>
+    <p>
+        Impedit ad. Inceptos sed, voluptates possimus! Dui lacus cursus
+        laborum! Quas laboris itaque sed illum mattis minima pulvinar
+        ex.
+    </p>
+    <br>
+    <p> Hello  {{ user }} , our selected primes are ... </p>
+
+</div>
+
+<div>
+    <ul>
+        {% for item in items %}
+            <li> {{item}} </li>
+        {% endfor %}
+    </ul>
+
+</div>
+<h3> <u><b> Simple Math </b></u></h3>
+<br>
+<h4> HOVER TEST </h4>
+<div>
+    <input type="range" id="a" value="20">100
+    <br />
+    <input type="range" id="b" value="40">100
+    <br />
+    <button id="btn"  >Click!</button>
+    <br />
+    <p> Your Answer is below </p>
+    Answer: <output type="text" id="c"></output>
+</div>
+
+</html>
