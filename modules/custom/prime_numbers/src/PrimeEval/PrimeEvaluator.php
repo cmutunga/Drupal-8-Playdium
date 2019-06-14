@@ -2,6 +2,9 @@
 
 namespace drupal\prime_numbers\PrimeEval;
 use Drupal\Core\Session\AccountProxyInterface;
+
+//this is a trivial service that selects a specified number of prime numbers between to limits. Say, select three
+//prime numbers at random between 30 and 100
 class PrimeEvaluator
 
 {
@@ -9,23 +12,16 @@ class PrimeEvaluator
      * @var AccountProxy
      */
     protected $currentUser;
-
+    //current user service allows us to include a personalized greeting to the user
     public function __construct(AccountProxyInterface $currentUser) {
         $this->currentUser = $currentUser;
     }
 
-    //to be used to find all prime numers between two limits
-    private function discoverPrimeNumbers($lowerLimit, $upperLimit){
 
-    }
-
-    //two additional arguments to be used
-    public function selectPrimeNumbers($num) {
-
-        /*FIX FOR $num = 1*/
-        //place holder for discoverPrimeNumbers function
-        $primeNumbers = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31];
-
+    public function selectPrimeNumbers($num, $lowerLimit, $upperLimit) {
+        //find all prime numbers between two numbers
+        $primeNumbers = $this->discoverPrimes($lowerLimit,$upperLimit);
+        //select a few keys keys at random
         $keys = array_rand($primeNumbers, $num);
 
         $currUser = $this->currentUser->getAccountName();
@@ -33,7 +29,31 @@ class PrimeEvaluator
         $selection = $this->buildNewArray($keys, $primeNumbers, $currUser);
         return $selection;        
     }
+    //to be used to find all prime numbers between two limits
+    private function discoverPrimes ($lower, $upper){
+       $arrPrimes = [];
+       for ($x=$lower; $x<=$upper; $x++){
+       if ($this->isItPrime($x)){
+           array_push($arrPrimes, $x);
+       }
+       }
+        return $arrPrimes;
+    }
+    //find out if a particular number is prime
+    private function isItPrime($testNum){
+        $countLimit = $testNum/2;
+        $prime = TRUE;
+        $x=2;
 
+        while($x<$countLimit){
+          if($testNum%$x==0){
+              $prime=FALSE;
+          }
+        $x++;
+        }
+        return $prime;
+    }
+    //select elements
     private function buildNewArray(array $arr, array $mainArr, $usr){
 
         $num = sizeof($arr);

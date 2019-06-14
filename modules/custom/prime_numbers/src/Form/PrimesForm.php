@@ -36,45 +36,71 @@ class PrimesForm extends FormBase {
 
 public function buildForm(array $form, FormStateInterface $form_state) {
 
-$form ['Number'] = [
-  '#type' => 'textfield',
-    '#size' => 20,
-  '#title' => $this->t('Enter #'),
-  ];
-
-$form['Query']= [
-  '#type' => 'submit',
-  '#value' => $this->t('Try'),
-];
-
-$form ['Message']= [
+$form ['Message1']= [
     '#type' => 'html_tag',
     '#tag' => 'p',
-    '#value' => $this->t('xxxxx Front End xxxxx'),
+    '#value' => $this->t('-- Find some prime numbers --') .'<br>'.$this->t('-- These elements respond to backend PHP Code --'),
+];
+
+$form['backend'] = [
+    '#type' => 'fieldset',
+    '#title' => $this->t('Back End'),
+    ];
+
+//form elements that respond to backend drupal PHP code
+$form ['backend']['Number'] = [
+    '#type' => 'textfield',
+    '#size' => 10,
+    '#title' => $this->t('How many prime #s -- upto 5'),
+];
+$form ['backend']['UpperLimit'] = [
+    '#type' => 'textfield',
+    '#size' => 10,
+    '#title' => $this->t('To ? -- upto 1000'),
+    ];
+$form ['backend']['LowerLimit'] = [
+    '#type' => 'textfield',
+    '#size' => 10,
+    '#title' => $this->t('From ? -- upto 996'),
+];
+$form ['backend']['Query']= [
+    '#type' => 'submit',
+    '#value' => $this->t('Try'),
 ];
 
 
-$form['a']= [
+$form ['Message2']= [
+    '#type' => 'html_tag',
+    '#tag' => 'p',
+    '#value' => '<br>'.'<br>'.$this->t('-- Use slider, add 2 numbers --') .'<br>'.$this->t('-- The elements below respond to frontend JS Code --'),
+];
+
+$form['frontend'] = [
+    '#type' => 'fieldset',
+    '#title' => $this->t('Front End'),
+];
+
+//form elements that respond to frontend JS code
+$form ['frontend']['a']= [
     '#type' => 'range',
     '#title' => $this->t('1st #'),
 ];
 
-$form['b']= [
+$form ['frontend']['b']= [
     '#type' => 'range',
     '#title' => $this->t('2nd #'),
 ];
 
-$form['c']= [
+$form ['frontend']['c']= [
     '#type' => 'textfield',
-    '#size' => 20,
+    '#size' => 16,
     '#title' => $this->t('Answer'),
 ];
 
-$form['btn']= [
+$form ['frontend']['btn']= [
     '#type' => 'button',
     '#value' => $this->t('Click!'),
 ];
-
 
 	return $form;
  }
@@ -85,22 +111,95 @@ $form['btn']= [
    */
 
 public function validateForm(array &$form, FormStateInterface $form_state) {
-    $input1 = $form_state->getValue('Number');
 
-    $invalidData = $this->inValid($input1);
+    $inputs = ['nm'=> $form_state->getValue('Number'), 'ul'=> $form_state->getValue('UpperLimit'), 'll'=> $form_state->getValue('LowerLimit')];
 
-    if ($invalidData) {
-        $msg1 = 'Please enter a whole number between 1 and 11';
-        $form_state->setErrorByName('Number',$msg1);
+    $i=0;
+    foreach ($inputs as $input){
+        switch($i){
+            case 0:
+                $element = 'Number';
+                $expected = 5;
+                Break;
+            case 1:
+                $element = 'UpperLimit';
+                $expected = 1000;
+                Break;
+            case 2:
+                $element = 'LowerLimit';
+                $expected = 996;
+                Break;
+        }
+        $testNumPop=$this->isPopulated($input);
+        $msg = $testNumPop[1];
+        if ($testNumPop[0] == FALSE) {
+            $form_state->setErrorByName($element,$msg);
+        }
+
+        $testNumInt=$this->isInteger($input);
+        $msg = $testNumInt[1];
+        if ($testNumInt[0] == FALSE) {
+            $form_state->setErrorByName($element,$msg);
+        }
+
+        $testNumRange=$this->isReasonableRange($input,$expected);
+        $msg = $testNumRange[1];
+        if ($testNumRange[0] == FALSE) {
+            $form_state->setErrorByName($element,$msg);
+        }
+
+        $i++;
     }
+
+    $comparisonMsg = 'Upper limit should be greater than lower limit';
+    if ($inputs['ul'] <= $inputs['ll'] ){
+        $form_state->setErrorByName('LowerLimit',$comparisonMsg);
+    }
+
 }
 
-Private function inValid($num){
-    $intTest = ((floatval($num) - intval($num)) <> 0);
-    $rangeTest = ($num > 11) or ($num <1);
-    return ($intTest or $rangeTest);
+//ensures that all fields are populated
+Private function isPopulated ($val){
+
+    if ($val == NULL) {
+      $msg = 'Please populate all fields';
+      $populated = FALSE;
+    }
+    $isValid = [$populated, $msg];
+    return $isValid;
+}
+
+//ensures that all fields are positive integers
+Private function isInteger ($val){
+    //a hack
+    $isInt = ctype_digit(strval($val));
+    $msg = 'Please enter integer values';
+    $isValidInt = [$isInt, $msg];
+    return $isValidInt;
+}
+
+
+//ensures that inputs are within reasonable range, range between 1 and 1000, # of primes requested is less than 5 and ..
+//'to' field is greater than 'from' field
+Private function isReasonableRange ($set, $expected){
+
+    if($set>$expected){
+        $msg = 'Upto 5 prime-numbers between (1 upto 996) and 1000 please, lower limit not exceeding 996';
+        $range = FALSE;
+        $reasonable = [$range,$msg];
+        return $reasonable;
+    }
+
+    if ($set<1){
+            $msg = 'Only positive numbers';
+            $range = FALSE;
+            $reasonable = [$range,$msg];
+            return $reasonable;
+        }
 
 }
+
+
 
 /**
    * {@inheritdoc}
@@ -108,15 +207,24 @@ Private function inValid($num){
 
 public function submitForm(array &$form, FormStateInterface $form_state) {
 
-    $input2 = $form_state->getValue('Number');
+    $form_state->clearErrors();
 
-    $arrPrimes = $this->primeEvaluator->selectPrimeNumbers($input2);
+    $inputs = ['nm'=> $form_state->getValue('Number'), 'ul'=> $form_state->getValue('UpperLimit'), 'll'=> $form_state->getValue('LowerLimit')];
+    $numPrimes = $inputs['nm'];
+    $upperLmt = $inputs['ul'];
+    $lowerLmt = $inputs ['ll'];
+
+
+    $arrPrimes = $this->primeEvaluator->selectPrimeNumbers($numPrimes,$lowerLmt,$upperLmt);
 
     $loginUsr = array_pop($arrPrimes);
 
     $msg2 = $this->craftMessage($arrPrimes,$loginUsr);
     $this->messenger->addMessage($msg2);
-    }
+
+
+}
+
 private function craftMessage(array $msgData, $user) {
     $num = sizeof($msgData);
     $aMsg = 'Hello '.$user. ', here are our selected primes: ';
