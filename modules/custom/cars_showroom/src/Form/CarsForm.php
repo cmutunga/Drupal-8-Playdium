@@ -40,8 +40,6 @@ class CarsForm extends FormBase{
                         ],
                  ];
 
-
-
                 //1. Build & return list of cars
                 // 1.1 start with table headers
                 $carHeaders = [
@@ -58,7 +56,7 @@ class CarsForm extends FormBase{
                 //1.2 Call DB access service to return an inventory array
                 $carInventory = $this->dbAccess->getInventory();
                 //1.3 use inventory array and headers to build render array as table on a form
-                $car['list']  = [
+                $form['list']  = [
                     '#type' => 'tableselect',
                     '#caption' => $this
                         ->t('Cars For Sale'),
@@ -67,44 +65,43 @@ class CarsForm extends FormBase{
                 ];
 
 
-
-                $car ['add']['car_id'] = [
+                $form ['add']['car_id'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Car ID'),
                 ];
 
-                $car ['add']['make'] = [
+                $form ['add']['make'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Car Make'),
                 ];
 
-                $car ['add']['model'] = [
+                $form ['add']['model'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Model'),
                 ];
 
-                $car ['add']['color'] = [
+                $form ['add']['color'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Color'),
                 ];
 
-                $car ['add']['odo'] = [
+                $form ['add']['odo'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Odo Reading'),
                 ];
 
-                $car ['add']['year'] = [
+                $form ['add']['year'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Year'),
                 ];
 
-                $car ['add']['list_price'] = [
+                $form ['add']['list_price'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('List Price'),
@@ -112,20 +109,18 @@ class CarsForm extends FormBase{
 
                 //FK validation -- ensures only bonafide sales persons can be entered in this field
                 $salesPersons = $this->fkValidator->getSalesPersons();
-                $car ['add']['emp_id'] = [
+                $form ['add']['emp_id'] = [
                     '#type' => 'select',
                     '#title' => $this->t('Sales Person'),
                     '#options' => $salesPersons,
                 ];
 
-                $form = $car['add'];
 
-                /*
                 $form ['action']= [
                     '#type' => 'submit',
                     '#value' => $this->t('Add this!'),
                 ];
-                */
+
 
                 $form['#cache']['max-age'] = 0;
                 return $form;

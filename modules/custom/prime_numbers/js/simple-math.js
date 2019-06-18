@@ -1,5 +1,5 @@
 
-//this simple code tests that services yml work and will be replaced
+//this simple code tests that services yml works and will be replaced
 
 var slider1 = document.getElementById("a");
 var slider2 = document.getElementById("b");

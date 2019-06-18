@@ -31,7 +31,7 @@ class CustomersForm extends FormBase{
     }
 
     public function buildForm(array $form, FormStateInterface $form_state) {
-        /*
+
                 //3. To list existing customers
                 //3.1 start with table headers
                 $customerHeaders = [
@@ -52,7 +52,7 @@ class CustomersForm extends FormBase{
                     '#header' => $customerHeaders,
                     '#options' => $allCustomers,
                 ];
-                */
+
 
 
         //To add new customer

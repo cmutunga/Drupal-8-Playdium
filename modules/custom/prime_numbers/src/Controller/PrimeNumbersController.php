@@ -25,7 +25,7 @@ class PrimeNumbersController extends ControllerBase
     public function isItPrime($count)
     {
         //to add two more arguments to cover upper and lower discovery limits
-        $arrPrimes = $this->primeEvaluator->selectPrimeNumbers($count, 2, 100);
+        $arrPrimes = $this->primeEvaluator->selectPrimeNumbers($count, 2, 200);
 
         $num = sizeof($arrPrimes);
         $usr = array_pop($arrPrimes);

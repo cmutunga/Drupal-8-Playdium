@@ -36,6 +36,8 @@ class PrimesForm extends FormBase {
 
 public function buildForm(array $form, FormStateInterface $form_state) {
 
+$form['#attached']['library'][]= 'prime_numbers/simple-math';
+
 $form ['Message1']= [
     '#type' => 'html_tag',
     '#tag' => 'p',

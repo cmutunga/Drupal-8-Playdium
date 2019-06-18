@@ -34,7 +34,7 @@ class EmployeesForm extends FormBase {
 
     public function buildForm(array $form, FormStateInterface $form_state) {
 
-        /*
+
                 //2. Build list of employees
                 //2.1 start with table headers
                 $employeeHeaders = [
@@ -56,7 +56,7 @@ class EmployeesForm extends FormBase {
                     '#options' => $allEmployees,
                 ];
 
-          */
+
                 $form ['add']['emp_id'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
