@@ -34,6 +34,17 @@ class EmployeesForm extends FormBase {
 
     public function buildForm(array $form, FormStateInterface $form_state) {
 
+        $form ['data_selector'] = [
+            '#type' => 'select',
+            '#title' => $this->t('Type of entry'),
+            '#options' => [
+                '1' => $this->t('List or Delete Employees'),
+                '2' => $this->t('Add Employees'),
+                '3' => $this->t('Edit Employees'),
+            ],
+        ];
+
+
 
                 //2. Build list of employees
                 //2.1 start with table headers

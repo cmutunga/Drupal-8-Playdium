@@ -32,7 +32,18 @@ class CustomersForm extends FormBase{
 
     public function buildForm(array $form, FormStateInterface $form_state) {
 
-                //3. To list existing customers
+        $form ['data_selector'] = [
+            '#type' => 'select',
+            '#title' => $this->t('Type of entry'),
+            '#options' => [
+                '1' => $this->t('List or Delete Customers'),
+                '2' => $this->t('Add Customers'),
+                '3' => $this->t('Edit Customers'),
+            ],
+        ];
+
+
+        //3. To list existing customers
                 //3.1 start with table headers
                 $customerHeaders = [
                     'id' => $this->t('ID'),
