@@ -64,6 +64,10 @@ class CarsForm extends FormBase{
                     '#options' => $carInventory,
                 ];
 
+                $form ['action_list']= [
+                    '#type' => 'submit',
+                    '#value' => $this->t('Delete Selected!'),
+                ];
 
                 $form ['add']['car_id'] = [
                     '#type' => 'textfield',
@@ -115,11 +119,16 @@ class CarsForm extends FormBase{
                     '#options' => $salesPersons,
                 ];
 
-
-                $form ['action']= [
+                $form ['action_add']= [
                     '#type' => 'submit',
                     '#value' => $this->t('Add this!'),
                 ];
+
+
+               /* $form['add'] = ['#access' => 'false'];*/
+                /*$form['list'] = ['#access' => 'false'];*/
+                /*$form['action_add'] = ['#access' => 'false'];*/
+               /*$form['action_list']= ['#access' =>  'false'];*/
 
 
                 $form['#cache']['max-age'] = 0;

@@ -64,43 +64,51 @@ class CustomersForm extends FormBase{
                     '#options' => $allCustomers,
                 ];
 
-
+                $form ['action_list']= [
+                    '#type' => 'submit',
+                    '#value' => $this->t('Delete Selected!'),
+                ];
 
         //To add new customer
-        $form ['customer']['client_id'] = [
+        $form ['add']['client_id'] = [
             '#type' => 'textfield',
             '#size' => 20,
             '#title' => $this->t('Client ID'),
         ];
 
-        $form ['customer']['first_name'] = [
+        $form ['add']['first_name'] = [
             '#type' => 'textfield',
             '#size' => 20,
             '#title' => $this->t('First Name'),
         ];
 
-        $form ['customer']['last_name'] = [
+        $form ['add']['last_name'] = [
             '#type' => 'textfield',
             '#size' => 20,
             '#title' => $this->t('Last Name'),
         ];
 
-        $form ['customer']['email'] = [
+        $form ['add']['email'] = [
             '#type' => 'textfield',
             '#size' => 20,
             '#title' => $this->t('email'),
         ];
 
-        $form ['customer']['phone'] = [
+        $form ['add']['phone'] = [
             '#type' => 'textfield',
             '#size' => 20,
             '#title' => $this->t('phone number'),
         ];
 
-        $form ['customer']['add']= [
+        $form ['action_add']= [
             '#type' => 'submit',
             '#value' => $this->t('Add this!'),
         ];
+
+        /*$form['add'] = ['#access' => 'false'];*/
+        $form['list'] = ['#access' => 'false'];
+        /*$form['action_add'] = ['#access' => 'false'];*/
+        $form['action_list']= ['#access' =>  'false'];
 
         $form['#cache']['max-age'] = 0;
         return $form;

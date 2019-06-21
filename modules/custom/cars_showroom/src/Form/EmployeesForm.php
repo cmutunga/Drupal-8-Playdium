@@ -67,6 +67,10 @@ class EmployeesForm extends FormBase {
                     '#options' => $allEmployees,
                 ];
 
+                $form ['action_list']= [
+                    '#type' => 'submit',
+                    '#value' => $this->t('Delete Selected!'),
+                ];
 
                 $form ['add']['emp_id'] = [
                     '#type' => 'textfield',
@@ -110,11 +114,15 @@ class EmployeesForm extends FormBase {
                     '#options' => $managers,
                 ];
 
-                $form ['add']['add_employee']= [
+                $form ['action_add']= [
                     '#type' => 'submit',
                     '#value' => $this->t('Add this!'),
-                ];
+                 ];
 
+                /*$form['add'] = ['#access' => 'false'];*/
+                $form['list'] = ['#access' => 'false'];
+                /*$form['action_add'] = ['#access' => 'false'];*/
+                $form['action_list']= ['#access' =>  'false'];
 
         $form['#cache']['max-age'] = 0;
         return $form;

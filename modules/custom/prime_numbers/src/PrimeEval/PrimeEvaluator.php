@@ -53,7 +53,7 @@ class PrimeEvaluator
         }
         return $prime;
     }
-    //select elements
+    //select elements from the main array of prime using indexes selected at random
     private function buildNewArray(array $arr, array $mainArr, $usr){
 
         $num = sizeof($arr);
