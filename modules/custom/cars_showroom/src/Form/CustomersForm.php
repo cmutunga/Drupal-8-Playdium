@@ -32,7 +32,7 @@ class CustomersForm extends FormBase{
 
     public function buildForm(array $form, FormStateInterface $form_state) {
 
-        $form ['data_selector'] = [
+        $form ['action_selector'] = [
             '#type' => 'select',
             '#title' => $this->t('Type of entry'),
             '#options' => [
@@ -58,15 +58,28 @@ class CustomersForm extends FormBase{
 
                 $form['list'] = [
                     '#type' => 'tableselect',
-                    '#caption' => $this
-                        ->t('All Customers'),
+                    '#caption' => $this->t('All Customers'),
                     '#header' => $customerHeaders,
+                    '#multiple' => FALSE,
                     '#options' => $allCustomers,
                 ];
 
-                $form ['action_list']= [
+                $form ['action_delete']= [
                     '#type' => 'submit',
                     '#value' => $this->t('Delete Selected!'),
+                ];
+
+                $form['edit'] = [
+                    '#type' => 'tableselect',
+                    '#caption' => $this ->t('All Customers'),
+                    '#header' => $customerHeaders,
+                    '#multiple' => FALSE,
+                    '#options' => $allCustomers,
+                ];
+
+                $form ['action_edit']= [
+                    '#type' => 'submit',
+                    '#value' => $this->t('Edit Selected!'),
                 ];
 
         //To add new customer
@@ -106,9 +119,11 @@ class CustomersForm extends FormBase{
         ];
 
         /*$form['add'] = ['#access' => 'false'];*/
-        $form['list'] = ['#access' => 'false'];
+        /*$form['list'] = ['#access' => 'false'];*/
+        /*$form['edit'] = ['#access' => 'false'];*/
         /*$form['action_add'] = ['#access' => 'false'];*/
-        $form['action_list']= ['#access' =>  'false'];
+        /*$form['action_delete']= ['#access' =>  'false'];*/
+        /*$form['action_edit']= ['#access' =>  'false'];*/
 
         $form['#cache']['max-age'] = 0;
         return $form;

@@ -58,15 +58,28 @@ class CarsForm extends FormBase{
                 //1.3 use inventory array and headers to build render array as table on a form
                 $form['list']  = [
                     '#type' => 'tableselect',
-                    '#caption' => $this
-                        ->t('Cars For Sale'),
+                    '#caption' => $this ->t('Cars For Sale'),
                     '#header' => $carHeaders,
+                    '#multiple' => FALSE,
                     '#options' => $carInventory,
                 ];
 
-                $form ['action_list']= [
+                $form ['action_delete']= [
                     '#type' => 'submit',
                     '#value' => $this->t('Delete Selected!'),
+                ];
+
+                $form['edit']  = [
+                    '#type' => 'tableselect',
+                    '#caption' => $this ->t('Cars For Sale'),
+                    '#header' => $carHeaders,
+                    '#multiple' => FALSE,
+                    '#options' => $carInventory,
+                ];
+
+                $form ['action_edit']= [
+                    '#type' => 'submit',
+                    '#value' => $this->t('Edit Selected!'),
                 ];
 
                 $form ['add']['car_id'] = [
@@ -127,9 +140,10 @@ class CarsForm extends FormBase{
 
                /* $form['add'] = ['#access' => 'false'];*/
                 /*$form['list'] = ['#access' => 'false'];*/
+                /*$form['edit'] = ['#access' => 'false'];*/
                 /*$form['action_add'] = ['#access' => 'false'];*/
-               /*$form['action_list']= ['#access' =>  'false'];*/
-
+                /*$form['action_delete']= ['#access' =>  'false'];*/
+                /*$form['action_edit']= ['#access' =>  'false'];*/
 
                 $form['#cache']['max-age'] = 0;
                 return $form;

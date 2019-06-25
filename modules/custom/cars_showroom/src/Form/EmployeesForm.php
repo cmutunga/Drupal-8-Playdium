@@ -34,7 +34,7 @@ class EmployeesForm extends FormBase {
 
     public function buildForm(array $form, FormStateInterface $form_state) {
 
-        $form ['data_selector'] = [
+        $form ['action_selector'] = [
             '#type' => 'select',
             '#title' => $this->t('Type of entry'),
             '#options' => [
@@ -61,16 +61,30 @@ class EmployeesForm extends FormBase {
                 //2.3 use employee array and headers to build render array as table on a form
                 $form['list'] = [
                     '#type' => 'tableselect',
-                    '#caption' => $this
-                        ->t('All Employees'),
+                    '#caption' => $this ->t('All Employees'),
                     '#header' => $employeeHeaders,
+                    '#multiple' => FALSE,
                     '#options' => $allEmployees,
                 ];
 
-                $form ['action_list']= [
+                $form ['action_delete']= [
                     '#type' => 'submit',
                     '#value' => $this->t('Delete Selected!'),
                 ];
+
+                $form['edit'] = [
+                    '#type' => 'tableselect',
+                    '#caption' => $this ->t('All Employees'),
+                    '#header' => $employeeHeaders,
+                    '#multiple' => FALSE,
+                    '#options' => $allEmployees,
+                ];
+
+                $form ['action_edit']= [
+                    '#type' => 'submit',
+                    '#value' => $this->t('Edit Selected!'),
+                ];
+
 
                 $form ['add']['emp_id'] = [
                     '#type' => 'textfield',
@@ -120,9 +134,11 @@ class EmployeesForm extends FormBase {
                  ];
 
                 /*$form['add'] = ['#access' => 'false'];*/
-                $form['list'] = ['#access' => 'false'];
+                /*$form['list'] = ['#access' => 'false'];*/
+                /*$form['edit'] = ['#access' => 'false'];*/
                 /*$form['action_add'] = ['#access' => 'false'];*/
-                $form['action_list']= ['#access' =>  'false'];
+                /*$form['action_delete']= ['#access' =>  'false'];*/
+                /*$form['action_edit']= ['#access' =>  'false'];*/
 
         $form['#cache']['max-age'] = 0;
         return $form;
