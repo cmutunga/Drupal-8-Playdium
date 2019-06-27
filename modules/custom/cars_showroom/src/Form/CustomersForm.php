@@ -56,7 +56,20 @@ class CustomersForm extends FormBase{
                 $allCustomers = $this->dbAccess->getCustomers();
                 //2.3 use customer array and headers to build render array as table on a form
 
-                $form['list'] = [
+                $form['list_customers_container'] = [
+                    '#type' => 'container',
+            // Note that the ID here matches with the 'wrapper' value use for the
+            // instrument family field's #ajax property.
+                    '#attributes' => ['id' => 'list_customers_container'],
+                ];
+
+                $form['list_customers_container']['list_fieldset'] = [
+                    '#type' => 'fieldset',
+                    '#title' => $this->t('List of customers, delete selected'),
+                ];
+
+
+                $form ['list_customers_container']['list_fieldset']['list'] = [
                     '#type' => 'tableselect',
                     '#caption' => $this->t('All Customers'),
                     '#header' => $customerHeaders,
@@ -64,12 +77,24 @@ class CustomersForm extends FormBase{
                     '#options' => $allCustomers,
                 ];
 
-                $form ['action_delete']= [
+                $form ['list_customers_container']['list_fieldset']['action_delete']= [
                     '#type' => 'submit',
                     '#value' => $this->t('Delete Selected!'),
                 ];
 
-                $form['edit'] = [
+                $form['edit_customers_container'] = [
+                    '#type' => 'container',
+            // Note that the ID here matches with the 'wrapper' value use for the
+            // instrument family field's #ajax property.
+                    '#attributes' => ['id' => 'edit_customers_container'],
+                ];
+
+                $form['edit_customers_container']['edit_fieldset'] = [
+                    '#type' => 'fieldset',
+                    '#title' => $this->t('List of customers, edit selected'),
+                ];
+
+                $form ['edit_customers_container']['edit_fieldset']['edit'] = [
                     '#type' => 'tableselect',
                     '#caption' => $this ->t('All Customers'),
                     '#header' => $customerHeaders,
@@ -77,43 +102,55 @@ class CustomersForm extends FormBase{
                     '#options' => $allCustomers,
                 ];
 
-                $form ['action_edit']= [
+                $form ['edit_customers_container']['edit_fieldset']['action_edit']= [
                     '#type' => 'submit',
                     '#value' => $this->t('Edit Selected!'),
                 ];
 
+        $form['add_customers_container'] = [
+            '#type' => 'container',
+            // Note that the ID here matches with the 'wrapper' value use for the
+            // instrument family field's #ajax property.
+            '#attributes' => ['id' => 'add_customers_container'],
+        ];
+
+        $form['add_customers_container']['add_fieldset'] = [
+            '#type' => 'fieldset',
+            '#title' => $this->t('Enter customer attributes and press button'),
+        ];
+
         //To add new customer
-        $form ['add']['client_id'] = [
+        $form ['add_customers_container']['add_fieldset']['client_id'] = [
             '#type' => 'textfield',
             '#size' => 20,
             '#title' => $this->t('Client ID'),
         ];
 
-        $form ['add']['first_name'] = [
+        $form ['add_customers_container']['add_fieldset']['first_name'] = [
             '#type' => 'textfield',
             '#size' => 20,
             '#title' => $this->t('First Name'),
         ];
 
-        $form ['add']['last_name'] = [
+        $form ['add_customers_container']['add_fieldset']['last_name'] = [
             '#type' => 'textfield',
             '#size' => 20,
             '#title' => $this->t('Last Name'),
         ];
 
-        $form ['add']['email'] = [
+        $form ['add_customers_container']['add_fieldset']['email'] = [
             '#type' => 'textfield',
             '#size' => 20,
             '#title' => $this->t('email'),
         ];
 
-        $form ['add']['phone'] = [
+        $form ['add_customers_container']['add_fieldset']['phone'] = [
             '#type' => 'textfield',
             '#size' => 20,
             '#title' => $this->t('phone number'),
         ];
 
-        $form ['action_add']= [
+        $form ['add_customers_container']['add_fieldset']['action_add']= [
             '#type' => 'submit',
             '#value' => $this->t('Add this!'),
         ];

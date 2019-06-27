@@ -59,7 +59,22 @@ class EmployeesForm extends FormBase {
                 //2.2 Call DB access service to return an employee array
                 $allEmployees = $this->dbAccess->getEmployees();
                 //2.3 use employee array and headers to build render array as table on a form
-                $form['list'] = [
+
+        $form['list_employees_container'] = [
+            '#type' => 'container',
+            // Note that the ID here matches with the 'wrapper' value use for the
+            // instrument family field's #ajax property.
+            '#attributes' => ['id' => 'list_employees_container'],
+        ];
+
+        $form['list_employees_container']['list_fieldset'] = [
+            '#type' => 'fieldset',
+            '#title' => $this->t('List of employees, delete selected'),
+        ];
+
+
+
+                $form ['list_employees_container']['list_fieldset']['list'] = [
                     '#type' => 'tableselect',
                     '#caption' => $this ->t('All Employees'),
                     '#header' => $employeeHeaders,
@@ -67,12 +82,24 @@ class EmployeesForm extends FormBase {
                     '#options' => $allEmployees,
                 ];
 
-                $form ['action_delete']= [
+                $form ['list_employees_container']['list_fieldset']['action_delete']= [
                     '#type' => 'submit',
                     '#value' => $this->t('Delete Selected!'),
                 ];
 
-                $form['edit'] = [
+                $form['edit_employees_container'] = [
+                    '#type' => 'container',
+                    // Note that the ID here matches with the 'wrapper' value use for the
+                    // instrument family field's #ajax property.
+                    '#attributes' => ['id' => 'edit_employees_container'],
+                 ];
+
+                $form['edit_employees_container']['list_fieldset'] = [
+                    '#type' => 'fieldset',
+                    '#title' => $this->t('List of employees, edit selected'),
+                ];
+
+                $form ['edit_employees_container']['list_fieldset']['edit'] = [
                     '#type' => 'tableselect',
                     '#caption' => $this ->t('All Employees'),
                     '#header' => $employeeHeaders,
@@ -80,37 +107,49 @@ class EmployeesForm extends FormBase {
                     '#options' => $allEmployees,
                 ];
 
-                $form ['action_edit']= [
+                $form ['edit_employees_container']['list_fieldset']['action_edit']= [
                     '#type' => 'submit',
                     '#value' => $this->t('Edit Selected!'),
                 ];
 
+                $form['add_employees_container'] = [
+                    '#type' => 'container',
+                    // Note that the ID here matches with the 'wrapper' value use for the
+                    // instrument family field's #ajax property.
+                    '#attributes' => ['id' => 'add_employees_container'],
+                ];
 
-                $form ['add']['emp_id'] = [
+                $form['add_employees_container']['list_fieldset'] = [
+                    '#type' => 'fieldset',
+                    '#title' => $this->t('Enter employee attributes and press button'),
+                ];
+
+
+                $form ['add_employees_container']['list_fieldset']['emp_id'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Employee ID'),
                 ];
 
-                $form ['add']['first_name'] = [
+                $form ['add_employees_container']['list_fieldset']['first_name'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('First Name'),
                 ];
 
-                $form ['add']['last_name'] = [
+                $form ['add_employees_container']['list_fieldset']['last_name'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Last Name'),
                 ];
 
-                $form ['add']['email'] = [
+                $form ['add_employees_container']['list_fieldset']['email'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('email'),
                 ];
 
-                $form ['add']['is_mnr'] = [
+                $form ['add_employees_container']['list_fieldset']['is_mnr'] = [
                     '#type' => 'select',
                     '#title' => $this->t('Is Manager?'),
                     '#options' => [
@@ -122,13 +161,13 @@ class EmployeesForm extends FormBase {
                 //FK validation --- ensure only bonafide managers can be entered in this field
                 $managers = $this->fkValidator->getManagers();
 
-                $form ['add']['mnr_id'] = [
+                $form ['add_employees_container']['list_fieldset']['mnr_id'] = [
                     '#type' => 'select',
                     '#title' => $this->t('Manager'),
                     '#options' => $managers,
                 ];
 
-                $form ['action_add']= [
+                $form ['add_employees_container']['list_fieldset']['action_add']= [
                     '#type' => 'submit',
                     '#value' => $this->t('Add this!'),
                  ];
