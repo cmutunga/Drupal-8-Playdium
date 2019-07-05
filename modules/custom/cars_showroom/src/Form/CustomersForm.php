@@ -32,15 +32,37 @@ class CustomersForm extends FormBase{
 
     public function buildForm(array $form, FormStateInterface $form_state) {
 
-        $form ['action_selector'] = [
+        $possibleViews = [
+            '1' => $this->t('List or Delete Customers'),
+            '2' => $this->t('Add Customer'),
+            '3' => $this->t('Edit Customer'),
+        ];
+
+        // Use a value, the first time the form loads. The key function
+        // returns the index element of the current array position
+        if (empty($form_state->getValue('action_dropdown'))) {
+
+            $selectedFrmView = key($possibleViews);
+        } else {
+            // Get the value if it already exists.
+            $selectedFrmView = $form_state->getValue('action_dropdown');
+        }
+
+        $form ['action_dropdown'] = [
             '#type' => 'select',
             '#title' => $this->t('Type of entry'),
-            '#options' => [
-                '1' => $this->t('List or Delete Customers'),
-                '2' => $this->t('Add Customers'),
-                '3' => $this->t('Edit Customers'),
-            ],
+            '#options' => $possibleViews,
+            '#ajax' => [
+                'callback' => '::formViewCallback',
+                'event' => 'change',
+                'wrapper' => 'form-container',
+                //if not empty first option else 2nd option after ?
+                '#default_value' =>   '',
+            ]
         ];
+
+
+
 
 
         //3. To list existing customers
@@ -56,20 +78,30 @@ class CustomersForm extends FormBase{
                 $allCustomers = $this->dbAccess->getCustomers();
                 //2.3 use customer array and headers to build render array as table on a form
 
-                $form['list_customers_container'] = [
+
+                //xxx
+                $form['form_container'] = [
                     '#type' => 'container',
-            // Note that the ID here matches with the 'wrapper' value use for the
-            // instrument family field's #ajax property.
-                    '#attributes' => ['id' => 'list_customers_container'],
+                        // Note that the ID here matches with the 'wrapper' value use for the
+                        // instrument family field's #ajax property.
+                    '#attributes' => ['id' => 'form-container'],
+                 ];
+
+
+                $form['form_container']['list_customers_container'] = [
+                    '#type' => 'container',
+                    // Note that the ID here matches with the 'wrapper' value use for the
+                    // instrument family field's #ajax property.
+                    '#attributes' => ['id' => 'list-customers-container'],
                 ];
 
-                $form['list_customers_container']['list_fieldset'] = [
+                $form['form_container']['list_customers_container']['list_fieldset'] = [
                     '#type' => 'fieldset',
                     '#title' => $this->t('List of customers, delete selected'),
                 ];
 
 
-                $form ['list_customers_container']['list_fieldset']['list'] = [
+                $form ['form_container']['list_customers_container']['list_fieldset']['list'] = [
                     '#type' => 'tableselect',
                     '#caption' => $this->t('All Customers'),
                     '#header' => $customerHeaders,
@@ -77,24 +109,26 @@ class CustomersForm extends FormBase{
                     '#options' => $allCustomers,
                 ];
 
-                $form ['list_customers_container']['list_fieldset']['action_delete']= [
+                $form ['form_container']['list_customers_container']['list_fieldset']['action_delete']= [
                     '#type' => 'submit',
-                    '#value' => $this->t('Delete Selected!'),
+                    '#value' => $this->t('Update'),
                 ];
 
-                $form['edit_customers_container'] = [
+                //xxx
+
+                $form['form_container']['edit_customers_container'] = [
                     '#type' => 'container',
-            // Note that the ID here matches with the 'wrapper' value use for the
-            // instrument family field's #ajax property.
-                    '#attributes' => ['id' => 'edit_customers_container'],
+                    // Note that the ID here matches with the 'wrapper' value use for the
+                    // instrument family field's #ajax property.
+                    '#attributes' => ['id' => 'edit-customers-container'],
                 ];
 
-                $form['edit_customers_container']['edit_fieldset'] = [
+                $form['form_container']['edit_customers_container']['edit_fieldset'] = [
                     '#type' => 'fieldset',
                     '#title' => $this->t('List of customers, edit selected'),
                 ];
 
-                $form ['edit_customers_container']['edit_fieldset']['edit'] = [
+                $form ['form_container']['edit_customers_container']['edit_fieldset']['edit'] = [
                     '#type' => 'tableselect',
                     '#caption' => $this ->t('All Customers'),
                     '#header' => $customerHeaders,
@@ -102,92 +136,122 @@ class CustomersForm extends FormBase{
                     '#options' => $allCustomers,
                 ];
 
-                $form ['edit_customers_container']['edit_fieldset']['action_edit']= [
+                $form ['form_container']['edit_customers_container']['edit_fieldset']['action_edit']= [
                     '#type' => 'submit',
-                    '#value' => $this->t('Edit Selected!'),
+                    '#value' => $this->t('Update'),
                 ];
 
-        $form['add_customers_container'] = [
+       //xxx
+
+        $form['form_container']['add_customers_container'] = [
             '#type' => 'container',
             // Note that the ID here matches with the 'wrapper' value use for the
             // instrument family field's #ajax property.
-            '#attributes' => ['id' => 'add_customers_container'],
+            '#attributes' => ['id' => 'add-customers-container'],
         ];
 
-        $form['add_customers_container']['add_fieldset'] = [
+        $form['form_container']['add_customers_container']['add_fieldset'] = [
             '#type' => 'fieldset',
             '#title' => $this->t('Enter customer attributes and press button'),
         ];
 
         //To add new customer
-        $form ['add_customers_container']['add_fieldset']['client_id'] = [
+        $form ['form_container']['add_customers_container']['add_fieldset']['client_id'] = [
             '#type' => 'textfield',
             '#size' => 20,
             '#title' => $this->t('Client ID'),
         ];
 
-        $form ['add_customers_container']['add_fieldset']['first_name'] = [
+        $form ['form_container']['add_customers_container']['add_fieldset']['first_name'] = [
             '#type' => 'textfield',
             '#size' => 20,
             '#title' => $this->t('First Name'),
         ];
 
-        $form ['add_customers_container']['add_fieldset']['last_name'] = [
+        $form ['form_container']['add_customers_container']['add_fieldset']['last_name'] = [
             '#type' => 'textfield',
             '#size' => 20,
             '#title' => $this->t('Last Name'),
         ];
 
-        $form ['add_customers_container']['add_fieldset']['email'] = [
+        $form ['form_container']['add_customers_container']['add_fieldset']['email'] = [
             '#type' => 'textfield',
             '#size' => 20,
             '#title' => $this->t('email'),
         ];
 
-        $form ['add_customers_container']['add_fieldset']['phone'] = [
+        $form ['form_container']['add_customers_container']['add_fieldset']['phone'] = [
             '#type' => 'textfield',
             '#size' => 20,
             '#title' => $this->t('phone number'),
         ];
 
-        $form ['add_customers_container']['add_fieldset']['action_add']= [
+        $form ['form_container']['add_customers_container']['add_fieldset']['action_add']= [
             '#type' => 'submit',
-            '#value' => $this->t('Add this!'),
+            '#value' => $this->t('Update'),
         ];
 
-        /*$form['add'] = ['#access' => 'false'];*/
-        /*$form['list'] = ['#access' => 'false'];*/
-        /*$form['edit'] = ['#access' => 'false'];*/
-        /*$form['action_add'] = ['#access' => 'false'];*/
-        /*$form['action_delete']= ['#access' =>  'false'];*/
-        /*$form['action_edit']= ['#access' =>  'false'];*/
+
+
+       // $selectedFrmView = $form_state->getValue('action_dropdown');
+
+        switch ($selectedFrmView) {
+            case '1':
+                $form['form_container']['add_customers_container'] = ['#access' => 'false'];
+                $form['form_container']['edit_customers_container'] = ['#access' => 'false'];
+                break;
+
+            case '2':
+                $form['form_container']['list_customers_container'] = ['#access' => 'false'];
+                $form['form_container']['edit_customers_container'] = ['#access' => 'false'];
+
+                break;
+
+            case '3':
+                $form['form_container']['add_customers_container'] = ['#access' => 'false'];
+                $form['form_container']['list_customers_container'] = ['#access' => 'false'];
+                break;
+        }
 
         $form['#cache']['max-age'] = 0;
         return $form;
     }
 
     public function submitForm(array &$form, FormStateInterface $form_state){
-        $clientData = [
-            'client_id' => $form_state->getValue('client_id'),
-            'first_name' => $form_state->getValue('first_name'),
-            'last_name' => $form_state->getValue('last_name'),
-            'email' => $form_state->getValue('email'),
-            'phone' => $form_state->getValue('phone'),
-        ];
 
-        $targetTable = 'customer';
-        $this->dbAccess->insertNewRecord($clientData, $targetTable);
+        $trigger = (string) $form_state->getTriggeringElement()['#value'];
 
+        if ($trigger == 'Update') {
+            // Process submitted form data.
+
+            $clientData = [
+                'client_id' => $form_state->getValue('client_id'),
+                'first_name' => $form_state->getValue('first_name'),
+                'last_name' => $form_state->getValue('last_name'),
+                'email' => $form_state->getValue('email'),
+                'phone' => $form_state->getValue('phone'),
+            ];
+
+            $targetTable = 'customer';
+            $this->dbAccess->insertNewRecord($clientData, $targetTable);
+
+        }
+        else {
+            // Rebuild the form. This causes buildForm() to be called again before the
+            // associated Ajax callback. Allowing the logic in buildForm() to execute
+            // and update the $form array so that it reflects the current state of
+            // the instrument family select list.
+            $form_state->setRebuild();
+        }
+
+    }
+
+    public function formViewCallback(array $form, FormStateInterface $form_state) {
+                return  $form['form_container'];
     }
 
     public function validateForm(array &$form, FormStateInterface $form_state){
 
     }
-
-
-
-
-
-
 
 }

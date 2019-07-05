@@ -30,15 +30,35 @@ class CarsForm extends FormBase{
 
     public function buildForm(array $form, FormStateInterface $form_state) {
 
-                 $form ['data_selector'] = [
+
+                $possibleViews = [
+                    '1' => $this->t('List or Delete Cars'),
+                    '2' => $this->t('Add Cars'),
+                    '3' => $this->t('Edit Cars'),
+                ];
+
+                // Use a value, the first time the form loads. The key function
+                // returns the index element of the current array position
+                if (empty($form_state->getValue('action_dropdown'))) {
+
+                    $selectedFrmView = key($possibleViews);
+                } else {
+                    // Get the value if it already exists.
+                    $selectedFrmView = $form_state->getValue('action_dropdown');
+                }
+
+             $form ['action_dropdown'] = [
                     '#type' => 'select',
                     '#title' => $this->t('Type of entry'),
-                    '#options' => [
-                        '1' => $this->t('List or Delete Cars'),
-                        '2' => $this->t('Add Cars'),
-                        '3' => $this->t('Edit Cars'),
-                        ],
-                 ];
+                    '#options' => $possibleViews,
+                    '#ajax' => [
+                        'callback' => '::formViewCallback',
+                        'event' => 'change',
+                        'wrapper' => 'form-container',
+                        //if not empty first option else 2nd option after ?
+                        '#default_value' =>   '',
+                    ]
+                ];
 
                 //1. Build & return list of cars
                 // 1.1 start with table headers
@@ -57,21 +77,28 @@ class CarsForm extends FormBase{
                 $carInventory = $this->dbAccess->getInventory();
                 //1.3 use inventory array and headers to build render array as table on a form
 
-                $form['list_cars_container'] = [
+        //xxx
+                $form['form_container'] = [
+                    '#type' => 'container',
+                    // Note that the ID here matches with the 'wrapper' value use for the
+                    // instrument family field's #ajax property.
+                    '#attributes' => ['id' => 'form-container'],
+                ];
+
+
+                $form ['form_container']['list_cars_container'] = [
                     '#type' => 'container',
                     // Note that the ID here matches with the 'wrapper' value use for the
                      // instrument family field's #ajax property.
-                    '#attributes' => ['id' => 'list_cars_container'],
+                    '#attributes' => ['id' => 'list-cars-container'],
                 ];
 
-                $form['list_cars_container']['list_fieldset'] = [
+                $form ['form_container']['list_cars_container']['list_fieldset'] = [
                     '#type' => 'fieldset',
                     '#title' => $this->t('List of cars, delete selected'),
                 ];
 
-
-
-                $form['list_cars_container']['list_fieldset']['list']  = [
+                $form ['form_container']['list_cars_container']['list_fieldset']['list']  = [
                     '#type' => 'tableselect',
                     '#caption' => $this ->t('Cars For Sale'),
                     '#header' => $carHeaders,
@@ -79,24 +106,24 @@ class CarsForm extends FormBase{
                     '#options' => $carInventory,
                 ];
 
-                $form ['list_cars_container']['list_fieldset']['action_delete']= [
+                $form ['form_container']['list_cars_container']['list_fieldset']['action_delete']= [
                     '#type' => 'submit',
-                    '#value' => $this->t('Delete Selected!'),
+                    '#value' => $this->t('Update'),
                 ];
 
-                $form['edit_cars_container'] = [
+                $form ['form_container']['edit_cars_container'] = [
                     '#type' => 'container',
                     // Note that the ID here matches with the 'wrapper' value use for the
                      // instrument family field's #ajax property.
-                    '#attributes' => ['id' => 'edit_cars_container'],
+                    '#attributes' => ['id' => 'edit-cars-container'],
                 ];
 
-                $form['edit_cars_container']['list_fieldset'] = [
+                $form ['form_container']['edit_cars_container']['list_fieldset'] = [
                     '#type' => 'fieldset',
                     '#title' => $this->t('List of cars, edit selected'),
                 ];
 
-                $form ['edit_cars_container']['list_fieldset']['edit']  = [
+                $form ['form_container']['edit_cars_container']['list_fieldset']['edit']  = [
                     '#type' => 'tableselect',
                     '#caption' => $this ->t('Cars For Sale'),
                     '#header' => $carHeaders,
@@ -104,60 +131,60 @@ class CarsForm extends FormBase{
                     '#options' => $carInventory,
                 ];
 
-                $form ['edit_cars_container']['list_fieldset']['action_edit']= [
+                $form ['form_container']['edit_cars_container']['list_fieldset']['action_edit']= [
                     '#type' => 'submit',
-                    '#value' => $this->t('Edit Selected!'),
+                    '#value' => $this->t('Update'),
                 ];
 
-                $form['add_cars_container'] = [
+                $form ['form_container']['add_cars_container'] = [
                     '#type' => 'container',
                     // Note that the ID here matches with the 'wrapper' value use for the
                     // instrument family field's #ajax property.
-                    '#attributes' => ['id' => 'add_cars_container'],
+                    '#attributes' => ['id' => 'add-cars-container'],
                 ];
 
-                $form['add_cars_container']['list_fieldset'] = [
+                $form ['form_container']['add_cars_container']['list_fieldset'] = [
                     '#type' => 'fieldset',
                     '#title' => $this->t('List of cars, edit selected'),
                 ];
 
-                $form ['add_cars_container']['list_fieldset']['car_id'] = [
+                $form ['form_container']['add_cars_container']['list_fieldset']['car_id'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Car ID'),
                 ];
 
-                $form ['add_cars_container']['list_fieldset']['make'] = [
+                $form ['form_container']['add_cars_container']['list_fieldset']['make'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Car Make'),
                 ];
 
-                $form ['add_cars_container']['list_fieldset']['model'] = [
+                $form ['form_container']['add_cars_container']['list_fieldset']['model'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Model'),
                 ];
 
-                $form ['add_cars_container']['list_fieldset']['color'] = [
+                $form ['form_container']['add_cars_container']['list_fieldset']['color'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Color'),
                 ];
 
-                $form ['add_cars_container']['list_fieldset']['odo'] = [
+                $form ['form_container']['add_cars_container']['list_fieldset']['odo'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Odo Reading'),
                 ];
 
-                $form ['add_cars_container']['list_fieldset']['year'] = [
+                $form ['form_container']['add_cars_container']['list_fieldset']['year'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('Year'),
                 ];
 
-                $form ['add_cars_container']['list_fieldset']['list_price'] = [
+                $form ['form_container']['add_cars_container']['list_fieldset']['list_price'] = [
                     '#type' => 'textfield',
                     '#size' => 20,
                     '#title' => $this->t('List Price'),
@@ -165,24 +192,36 @@ class CarsForm extends FormBase{
 
                 //FK validation -- ensures only bonafide sales persons can be entered in this field
                 $salesPersons = $this->fkValidator->getSalesPersons();
-                $form ['add_cars_container']['list_fieldset']['emp_id'] = [
+                $form ['form_container']['add_cars_container']['list_fieldset']['emp_id'] = [
                     '#type' => 'select',
                     '#title' => $this->t('Sales Person'),
                     '#options' => $salesPersons,
                 ];
 
-                $form ['add_cars_container']['list_fieldset']['action_add']= [
+                $form ['form_container']['add_cars_container']['list_fieldset']['action_add']= [
                     '#type' => 'submit',
-                    '#value' => $this->t('Add this!'),
+                    '#value' => $this->t('Update'),
                 ];
 
 
-               /* $form['add'] = ['#access' => 'false'];*/
-                /*$form['list'] = ['#access' => 'false'];*/
-                /*$form['edit'] = ['#access' => 'false'];*/
-                /*$form['action_add'] = ['#access' => 'false'];*/
-                /*$form['action_delete']= ['#access' =>  'false'];*/
-                /*$form['action_edit']= ['#access' =>  'false'];*/
+        // $selectedFrmView = $form_state->getValue('action_dropdown');
+
+                switch ($selectedFrmView) {
+                    case '1':
+                        $form['form_container']['add_cars_container'] = ['#access' => 'false'];
+                        $form['form_container']['edit_cars_container'] = ['#access' => 'false'];
+                        break;
+
+                    case '2':
+                        $form['form_container']['list_cars_container'] = ['#access' => 'false'];
+                        $form['form_container']['edit_cars_container'] = ['#access' => 'false'];
+                        break;
+
+                    case '3':
+                        $form['form_container']['add_cars_container'] = ['#access' => 'false'];
+                        $form['form_container']['list_cars_container'] = ['#access' => 'false'];
+                        break;
+                }
 
                 $form['#cache']['max-age'] = 0;
                 return $form;
@@ -190,21 +229,40 @@ class CarsForm extends FormBase{
 
     public function submitForm(array &$form, FormStateInterface $form_state){
 
-        // grab car element values and build them into array that represents a DB table record
-        $carData = [
-            'car_id' => $form_state->getValue('car_id'),
-            'make' => $form_state->getValue('make'),
-            'model' => $form_state->getValue('model'),
-            'color' => $form_state->getValue('color'),
-            'odo' => $form_state->getValue('odo'),
-            'year' => $form_state->getValue('year'),
-            'list_price' => $form_state->getValue('list_price'),
-            'emp_id' => $form_state->getValue('emp_id'),
-        ];
-        //insert record into DB table
-         //$this->connection->insert('car_inventory')->fields($carData)->execute();
-        $targetTable = 'car_inventory';
-        $this->dbAccess->insertNewRecord($carData, $targetTable);
+        $trigger = (string) $form_state->getTriggeringElement()['#value'];
+
+        if ($trigger == 'Update') {
+            // Process submitted form data.
+
+            // grab car element values and build them into array that represents a DB table record
+            $carData = [
+                'car_id' => $form_state->getValue('car_id'),
+                'make' => $form_state->getValue('make'),
+                'model' => $form_state->getValue('model'),
+                'color' => $form_state->getValue('color'),
+                'odo' => $form_state->getValue('odo'),
+                'year' => $form_state->getValue('year'),
+                'list_price' => $form_state->getValue('list_price'),
+                'emp_id' => $form_state->getValue('emp_id'),
+            ];
+            //insert record into DB table
+            //$this->connection->insert('car_inventory')->fields($carData)->execute();
+            $targetTable = 'car_inventory';
+            $this->dbAccess->insertNewRecord($carData, $targetTable);
+
+        }
+        else {
+            // Rebuild the form. This causes buildForm() to be called again before the
+            // associated Ajax callback. Allowing the logic in buildForm() to execute
+            // and update the $form array so that it reflects the current state of
+            // the instrument family select list.
+            $form_state->setRebuild();
+        }
+
+    }
+
+    public function formViewCallback(array $form, FormStateInterface $form_state) {
+        return  $form['form_container'];
     }
 
     public function validateForm(array &$form, FormStateInterface $form_state){
